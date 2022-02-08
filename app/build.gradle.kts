@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
@@ -7,6 +9,9 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
 }
+
+val privateProperties = Properties()
+privateProperties.load(FileInputStream(rootProject.file("private.properties")))
 
 android {
     compileSdk = 31
@@ -25,6 +30,9 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        forEach {
+            it.buildConfigField("String", "TMDB_API_KEY", privateProperties.getProperty("TMDB_API_KEY"))
         }
     }
     compileOptions {

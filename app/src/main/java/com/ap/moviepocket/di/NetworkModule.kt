@@ -1,5 +1,6 @@
 package com.ap.moviepocket.di
 
+import com.ap.moviepocket.BuildConfig
 import com.ap.moviepocket.data.movie.MovieService
 import dagger.Module
 import dagger.Provides
@@ -10,6 +11,7 @@ import retrofit2.Retrofit
 import javax.inject.Singleton
 
 const val BASE_URL = "https://api.themoviedb.org/3/"
+const val TMDP_API_KEY = BuildConfig.TMDB_API_KEY
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,8 +33,8 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideMovieService(retrofit: Retrofit) {
-        retrofit.create(MovieService::class.java)
+    fun provideMovieService(retrofit: Retrofit) : MovieService {
+        return retrofit.create(MovieService::class.java)
     }
 
 }
