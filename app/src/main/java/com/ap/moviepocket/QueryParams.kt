@@ -1,4 +1,5 @@
 package com.ap.moviepocket
 
-class QueryParams {
+interface QueryParams {
+    fun toMap() : Map<String, String>
 }

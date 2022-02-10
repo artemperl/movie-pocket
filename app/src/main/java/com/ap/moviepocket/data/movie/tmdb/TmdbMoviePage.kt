@@ -1,3 +1,13 @@
 package com.ap.moviepocket.data.movie.tmdb
 
-data class TMDBMoviePage()
+import com.google.gson.annotations.SerializedName
+
+data class TmdbMoviePage(
+    @SerializedName("page")
+    val currentPage : Int,
+    @SerializedName("total_page")
+    val totalPages : Int,
+    @SerializedName("total_results")
+    val totalResults : Int,
+    val results : List<TmdbMovie>
+)

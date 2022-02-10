@@ -1,6 +1,6 @@
 package com.ap.moviepocket.data.movie.tmdb
 
-data class Genre(
+data class TmdbGenre(
     val id : String?,
     val name : String?
 )

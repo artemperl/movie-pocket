@@ -1,7 +1,8 @@
 package com.ap.moviepocket.di
 
 import com.ap.moviepocket.BuildConfig
-import com.ap.moviepocket.data.movie.MovieService
+import com.ap.moviepocket.data.movie.tmdb.TMDBDiscoverService
+import com.ap.moviepocket.data.movie.tmdb.TmdbMovieService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,8 +34,13 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideMovieService(retrofit: Retrofit) : MovieService {
-        return retrofit.create(MovieService::class.java)
+    fun provideMovieService(retrofit: Retrofit) : TmdbMovieService {
+        return retrofit.create(TmdbMovieService::class.java)
+    }
+
+    @Provides
+    fun provideDiscoverService(retrofit: Retrofit) : TMDBDiscoverService {
+        return retrofit.create(TMDBDiscoverService::class.java)
     }
 
 }

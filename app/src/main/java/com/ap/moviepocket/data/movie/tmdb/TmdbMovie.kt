@@ -1,9 +1,9 @@
-package com.ap.moviepocket.data.movie
+package com.ap.moviepocket.data.movie.tmdb
 
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-data class TMDBMovie(
+data class TmdbMovie(
     val id : String?,
     val title : String?,
     @SerializedName("poster_path")
@@ -15,7 +15,7 @@ data class TMDBMovie(
     @SerializedName("vote_average")
     val vote_average : Double?,
     @SerializedName("release_date")
-    val releaseDate : Date,
-    val genres : Set
-
+    val releaseDate : Date?,
+    val genres : Set<TmdbGenre>?,
+    val overview : String?
 )
