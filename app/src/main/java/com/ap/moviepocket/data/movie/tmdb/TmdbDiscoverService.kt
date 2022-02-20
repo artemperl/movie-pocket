@@ -21,8 +21,8 @@ interface TMDBDiscoverService {
 }
 
 class DiscoverMoviesQueryParams(
-    val minVoteAverage: Int?,
-    val minVotes: Int?
+    val minVoteAverage: Int? = null,
+    val minVotes: Int? = null
 ) : QueryParams {
     override fun toMap(): Map<String, String> = HashMap<String, String>().apply {
         minVoteAverage ?: put("vote_average.gte", "$minVoteAverage")

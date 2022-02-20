@@ -16,4 +16,12 @@ tasks{
     register<Delete>("clean") {
         delete(rootProject.buildDir)
     }
+
+}
+
+subprojects {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions.freeCompilerArgs +=
+            "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"
+    }
 }

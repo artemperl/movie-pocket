@@ -9,7 +9,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor() : ViewModel() {
 
-    //private val _text = MutableStateFlow("Home Fragment")
-
-    val text: StateFlow<String> = flowOf("Home Fragment").stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "Home Fragment")
+    val text: StateFlow<String> = flowOf("Home Fragment")
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "Home Fragment")
 }

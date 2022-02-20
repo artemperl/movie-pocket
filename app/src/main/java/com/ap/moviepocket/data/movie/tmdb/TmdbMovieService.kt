@@ -12,7 +12,7 @@ import retrofit2.http.QueryMap
 interface TmdbMovieService {
 
     @GET("/movie/{movie_id}?api_key=${BuildConfig.TMDB_API_KEY}")
-    suspend fun discoverMovies(
+    suspend fun getMovie(
         @Path("movie_id") movieId : Int
     ) : Response<TmdbMovie>
 

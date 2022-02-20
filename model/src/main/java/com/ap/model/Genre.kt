@@ -19,5 +19,6 @@ enum class Genre {
     TV_MOVIE,
     THRILLER,
     WAR,
-    WESTERN
+    WESTERN,
+    UNKNOWN
 }
