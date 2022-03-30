@@ -10,6 +10,7 @@ import com.ap.moviepocket.domain.movie.DiscoverMoviesUseCase
 import com.ap.moviepocket.domain.succeeded
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +25,9 @@ class DiscoverViewModel @Inject constructor(
         .filter {
             it
         }.flatMapLatest {
-            discoverMoviesUseCase(Unit)
+            val res = discoverMoviesUseCase(Unit)
+
+            res
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), UseCaseResult.Loading)
 
     fun refreshMovies() {

@@ -4,12 +4,14 @@ import com.ap.moviepocket.data.movie.tmdb.DiscoverMoviesQueryParams
 import com.ap.moviepocket.data.movie.tmdb.TMDBDiscoverService
 import javax.inject.Inject
 import com.ap.moviepocket.data.movie.tmdb.TmdbMovie
+import com.ap.moviepocket.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class RemoteMovieDataSource @Inject constructor(
-    val tmdbDiscoverService: TMDBDiscoverService,
-    private val ioDispatcher: CoroutineDispatcher
+    private val tmdbDiscoverService: TMDBDiscoverService,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
     ) : MovieDataSource {
 
     override suspend fun getDiscoverMoviesList() : List<TmdbMovie>? {

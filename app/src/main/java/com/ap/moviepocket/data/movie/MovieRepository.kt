@@ -4,6 +4,7 @@ import com.ap.model.Movie
 import com.ap.moviepocket.data.movie.tmdb.TMDBDiscoverService
 import com.ap.moviepocket.data.movie.tmdb.TmdbMovieService
 import com.ap.moviepocket.data.movie.tmdb.toMovie
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 

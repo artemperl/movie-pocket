@@ -12,7 +12,7 @@ import retrofit2.http.QueryMap
 interface TMDBDiscoverService {
 
 
-    @GET("/discover/movie?api_key=${BuildConfig.TMDB_API_KEY}")
+    @GET("discover/movie?api_key=${BuildConfig.TMDB_API_KEY}")
     suspend fun discoverMovies(
         @QueryMap queryParams : Map<String, String>
     ) : Response<TmdbMoviePage>
@@ -25,7 +25,7 @@ class DiscoverMoviesQueryParams(
     val minVotes: Int? = null
 ) : QueryParams {
     override fun toMap(): Map<String, String> = HashMap<String, String>().apply {
-        minVoteAverage ?: put("vote_average.gte", "$minVoteAverage")
-        minVotes ?: put("vote_count.gte", "$minVotes")
+        minVoteAverage?.let {  put("vote_average.gte", "$minVoteAverage") }
+        minVotes?.let { put("vote_count.gte", "$minVotes") }
     }
 }
