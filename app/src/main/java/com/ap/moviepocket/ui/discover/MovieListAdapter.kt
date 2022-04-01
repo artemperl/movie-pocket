@@ -67,7 +67,7 @@ class MovieListAdapter :
 
         data class HeadingItem(val title: String) : MovieDataItem()
         data class MovieItem(val movie: Movie) : MovieDataItem()
-        object LoadMoreItem : MovieDataItem()
+        data class LoadMoreItem(val page: Int) : MovieDataItem()
 
     }
 
@@ -102,7 +102,7 @@ class MovieListAdapter :
             list +
                     MovieDataItem.HeadingItem(category) +
                     movies.map { MovieDataItem.MovieItem(it) } +
-                    MovieDataItem.LoadMoreItem
+                    MovieDataItem.LoadMoreItem(-1)
         }
 }
 
