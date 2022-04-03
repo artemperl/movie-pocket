@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ap.moviepocket.databinding.FragmentDiscoverBinding
@@ -15,9 +16,11 @@ import com.ap.moviepocket.domain.data
 import com.ap.moviepocket.domain.succeeded
 import com.ap.moviepocket.util.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.subscribe
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
 class DiscoverFragment : Fragment() {
@@ -45,7 +48,6 @@ class DiscoverFragment : Fragment() {
         // Adapter
         val adapter = MovieListAdapter()
         binding.recyclerViewDiscover.adapter = adapter
-        adapter.bottomSpace = 200
         (binding.recyclerViewDiscover.layoutManager as GridLayoutManager).apply {
             val columns = 3
             spanCount = columns
@@ -80,19 +82,19 @@ class DiscoverFragment : Fragment() {
     private fun subscribeUi(adapter: MovieListAdapter) {
         launchAndRepeatWithViewLifecycle {
             discoverViewModel.movieList.collect {
-                when (it) {
-                    is UseCaseResult.Loading -> binding.swipeRefreshDiscover.isRefreshing = true
-                    is UseCaseResult.Success -> {
-                        // TODO add dynamic categories
-                        adapter.updateItems("Discover", it.data)
-                        binding.swipeRefreshDiscover.isRefreshing = false
+                    when (it) {
+                        is UseCaseResult.Loading -> binding.swipeRefreshDiscover.isRefreshing = true
+                        is UseCaseResult.Success -> {
+                            // TODO add dynamic categories
+                            adapter.updateItems("Discover", it.data, -1)
+                            binding.swipeRefreshDiscover.isRefreshing = false
+                        }
+                        is UseCaseResult.Error -> {
+                            // TODO add dynamic categories
+                            //adapter.addItems("Discover", listOf())
+                            binding.swipeRefreshDiscover.isRefreshing = false
+                        }
                     }
-                    is UseCaseResult.Error -> {
-                        // TODO add dynamic categories
-                        //adapter.addItems("Discover", listOf())
-                        binding.swipeRefreshDiscover.isRefreshing = false
-                    }
-                }
             }
 
             discoverViewModel.refreshing.collect {

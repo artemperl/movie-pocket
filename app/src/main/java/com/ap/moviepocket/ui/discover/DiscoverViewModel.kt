@@ -9,6 +9,7 @@ import com.ap.moviepocket.domain.UseCaseResult
 import com.ap.moviepocket.domain.movie.DiscoverMoviesUseCase
 import com.ap.moviepocket.domain.succeeded
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 import javax.inject.Inject

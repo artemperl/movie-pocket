@@ -10,14 +10,15 @@ import com.ap.model.Movie
 import com.ap.moviepocket.databinding.ListItemDiscoverMovieBinding
 import com.ap.moviepocket.ui.discover.MovieListAdapter.MovieDataItem
 import com.squareup.picasso.Picasso
+import timber.log.Timber
 import java.util.*
 import kotlin.collections.LinkedHashMap
 
 class MovieListAdapter :
     ListAdapter<MovieDataItem, MovieListAdapter.MovieViewHolder>(MovieDiffCallback()) {
 
-    var bottomSpace = 0
     private val movieMap = LinkedHashMap<String, List<Movie>>()
+    private val dataItemMap = LinkedHashMap<String, List<MovieDataItem>>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         return MovieViewHolder(
@@ -31,6 +32,7 @@ class MovieListAdapter :
         val movie = getItem(position)
         holder.bind(movie)
     }
+
 
     inner class MovieViewHolder(
         private val binding: ListItemDiscoverMovieBinding
@@ -79,16 +81,9 @@ class MovieListAdapter :
         throw IllegalStateException("Call addItems() or updateItems() instead")
     }
 
-    fun addItems(category: String, movies: List<Movie>) {
-        movieMap.merge(category, movies) { oldMovies, newMovies ->
-            oldMovies + newMovies
-        }
-
-        super.submitList(getItemList())
-    }
-
-    fun updateItems(category: String, movies: List<Movie>) {
+    fun updateItems(category: String, movies: List<Movie>, nextPage: Int) {
         movieMap[category] = movies
+        dataItemMap[category] = createCategoryItems(category, movies, nextPage)
 
         super.submitList(getItemList())
     }
@@ -97,13 +92,24 @@ class MovieListAdapter :
 
     fun isButton(position: Int) : Boolean = currentList[position] is MovieDataItem.LoadMoreItem
 
-    private fun getItemList(): List<MovieDataItem> =
-        movieMap.entries.fold(listOf()) { list, (category, movies) ->
-            list +
-                    MovieDataItem.HeadingItem(category) +
-                    movies.map { MovieDataItem.MovieItem(it) } +
-                    MovieDataItem.LoadMoreItem(-1)
+    private fun createCategoryItems(category: String, movies: List<Movie>, nextPage: Int): List<MovieDataItem> {
+         val itemList = listOf<MovieDataItem>() +
+                 MovieDataItem.HeadingItem(category) +
+                 movies.map { MovieDataItem.MovieItem(it) }
+
+        return if (nextPage != -1) {
+            itemList + MovieDataItem.LoadMoreItem(nextPage)
+        } else {
+            itemList
         }
+    }
+
+    private fun getItemList(): List<MovieDataItem> =
+        dataItemMap.values.fold(LinkedList<MovieDataItem>()) { resultList, categoryList ->
+            resultList.addAll(categoryList)
+            resultList
+        }
+
 }
 
 private class MovieDiffCallback : DiffUtil.ItemCallback<MovieDataItem>() {
