@@ -4,4 +4,7 @@
     <string name="title_discover">Discover</string>
     <string name="title_watchlist">Watchlist</string>
     <string name="load_more_btn">Load more</string>
+
+    <string name="movie_category_discover">Discover</string>
+    <string name="movie_category_comedy">Comedy</string>
 </resources>

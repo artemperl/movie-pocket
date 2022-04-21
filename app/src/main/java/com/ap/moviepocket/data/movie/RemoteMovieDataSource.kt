@@ -14,11 +14,20 @@ class RemoteMovieDataSource @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
     ) : MovieDataSource {
 
-    override suspend fun getDiscoverMoviesList() : List<TmdbMovie>? {
+    override suspend fun getDiscoverMoviesList(page : Int) : Pair<List<TmdbMovie>, Int>? {
         return withContext(ioDispatcher) {
-            val response = tmdbDiscoverService.discoverMovies(DiscoverMoviesQueryParams().toMap())
+            val queryParams = DiscoverMoviesQueryParams(page = page)
+            val response = tmdbDiscoverService.discoverMovies(queryParams.toMap())
+            var nextPage = -1
 
-            (response.takeIf { response.isSuccessful } ?: return@withContext null).body()?.results ?: listOf()
+            return@withContext if (response.isSuccessful && (response.body() != null)) {
+                if (response.body()!!.totalPages > response.body()!!.currentPage) {
+                    nextPage = response.body()!!.currentPage + 1
+                }
+                Pair(response.body()!!.results, nextPage)
+            } else {
+                null
+            }
         }
     }
 }

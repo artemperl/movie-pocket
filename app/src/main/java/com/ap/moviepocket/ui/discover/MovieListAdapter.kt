@@ -3,22 +3,23 @@ package com.ap.moviepocket.ui.discover
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.marginBottom
-import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.ap.model.Movie
 import com.ap.moviepocket.databinding.ListItemDiscoverMovieBinding
+import com.ap.moviepocket.domain.movie.MovieCategory
 import com.ap.moviepocket.ui.discover.MovieListAdapter.MovieDataItem
 import com.squareup.picasso.Picasso
-import timber.log.Timber
 import java.util.*
-import kotlin.collections.LinkedHashMap
 
 class MovieListAdapter :
     ListAdapter<MovieDataItem, MovieListAdapter.MovieViewHolder>(MovieDiffCallback()) {
 
-    private val movieMap = LinkedHashMap<String, List<Movie>>()
-    private val dataItemMap = LinkedHashMap<String, List<MovieDataItem>>()
+    private var dataItemMap = LinkedHashMap<MovieCategory, List<MovieDataItem>>()
+
+    var onLoadMoreClickListener : (MovieCategory, Int) -> Unit = { _, _ -> }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         return MovieViewHolder(
@@ -52,13 +53,15 @@ class MovieListAdapter :
                     heading.visibility = View.VISIBLE
                     movieContainer.visibility = View.GONE
                     loadMoreButton.visibility = View.GONE
-                    heading.text = item.title
+                    heading.text = binding.root.context.getString(item.category.labelRes)
                 }
-                is MovieDataItem.LoadMoreItem -> binding.apply {
+                is MovieDataItem.LoadMoreItems -> binding.apply {
                     heading.visibility = View.GONE
                     movieContainer.visibility = View.GONE
                     loadMoreButton.visibility = View.VISIBLE
-                    // TODO add onClickListener
+                    loadMoreButton.setOnClickListener {
+                        onLoadMoreClickListener(item.category, item.nextPage)
+                    }
                 }
             }
         }
@@ -67,9 +70,9 @@ class MovieListAdapter :
 
     sealed class MovieDataItem {
 
-        data class HeadingItem(val title: String) : MovieDataItem()
+        data class HeadingItem(val category: MovieCategory) : MovieDataItem()
         data class MovieItem(val movie: Movie) : MovieDataItem()
-        data class LoadMoreItem(val page: Int) : MovieDataItem()
+        data class LoadMoreItems(val category: MovieCategory, val nextPage: Int) : MovieDataItem()
 
     }
 
@@ -81,28 +84,31 @@ class MovieListAdapter :
         throw IllegalStateException("Call addItems() or updateItems() instead")
     }
 
-    fun updateItems(category: String, movies: List<Movie>, nextPage: Int) {
-        movieMap[category] = movies
-        dataItemMap[category] = createCategoryItems(category, movies, nextPage)
+    fun updateItems(movies : Map<MovieCategory, Pair<List<Movie>, Int>>) {
+        dataItemMap = LinkedHashMap<MovieCategory, List<MovieDataItem>>()
+        movies.forEach { category, (movies, nextPage) ->
+            dataItemMap[category] = createCategoryItems(category, movies, nextPage)
+        }
 
-        super.submitList(getItemList())
+        val items = getItemList()
+        super.submitList(items)
     }
 
-    fun isHeading(position: Int) : Boolean = currentList[position] is MovieDataItem.HeadingItem
-
-    fun isButton(position: Int) : Boolean = currentList[position] is MovieDataItem.LoadMoreItem
-
-    private fun createCategoryItems(category: String, movies: List<Movie>, nextPage: Int): List<MovieDataItem> {
+    private fun createCategoryItems(category: MovieCategory, movies: List<Movie>, nextPage: Int): List<MovieDataItem> {
          val itemList = listOf<MovieDataItem>() +
                  MovieDataItem.HeadingItem(category) +
                  movies.map { MovieDataItem.MovieItem(it) }
 
         return if (nextPage != -1) {
-            itemList + MovieDataItem.LoadMoreItem(nextPage)
+            itemList + MovieDataItem.LoadMoreItems(category, nextPage)
         } else {
             itemList
         }
     }
+
+    fun isHeading(position: Int) : Boolean = currentList[position] is MovieDataItem.HeadingItem
+
+    fun isButton(position: Int) : Boolean = currentList[position] is MovieDataItem.LoadMoreItems
 
     private fun getItemList(): List<MovieDataItem> =
         dataItemMap.values.fold(LinkedList<MovieDataItem>()) { resultList, categoryList ->
@@ -123,4 +129,18 @@ private class MovieDiffCallback : DiffUtil.ItemCallback<MovieDataItem>() {
     override fun areContentsTheSame(oldItem: MovieDataItem, newItem: MovieDataItem): Boolean {
         return oldItem == newItem
     }
+}
+
+
+/**
+ * A SpanSizeLookup to make buttons and headings full width in a grid.
+ */
+class SpanSizeLookup(private val adapter : MovieListAdapter, private val columnCount : Int) : GridLayoutManager.SpanSizeLookup() {
+
+    override fun getSpanSize(position: Int) =
+        if (adapter.isHeading(position) || adapter.isButton(position)) {
+            columnCount
+        } else {
+            1
+        }
 }

@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 interface MovieRepository {
 
-    suspend fun getDiscoverMoviesList() : List<Movie>?
+    suspend fun getDiscoverMoviesList(page: Int) : Pair<List<Movie>, Int>?
 
 }
 
@@ -20,11 +20,17 @@ class DefaultMovieRepository @Inject constructor(
     private val localMovieDataSource: LocalMovieDataSource,
     ) : MovieRepository {
 
-    override suspend fun getDiscoverMoviesList(): List<Movie>? {
+    override suspend fun getDiscoverMoviesList(page : Int): Pair<List<Movie>, Int>? {
         // TODO replace hardcoded parameters with results from configuration
-        return remoteMovieDataSource
-            .getDiscoverMoviesList()
-            ?.map { it.toMovie("https://image.tmdb.org/t/p/", "w500") }
+        val remoteResult = remoteMovieDataSource.getDiscoverMoviesList(page)
+        return if (remoteResult != null) {
+            Pair(
+                remoteResult.first.map { it.toMovie("https://image.tmdb.org/t/p/", "w500") },
+                remoteResult.second
+            )
+        } else {
+            null
+        }
     }
 
 }

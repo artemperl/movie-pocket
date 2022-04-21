@@ -1,6 +1,7 @@
 package com.ap.moviepocket.ui.discover
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,17 +50,12 @@ class DiscoverFragment : Fragment() {
         val adapter = MovieListAdapter()
         binding.recyclerViewDiscover.adapter = adapter
         (binding.recyclerViewDiscover.layoutManager as GridLayoutManager).apply {
-            val columns = 3
-            spanCount = columns
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int =
-                    if (adapter.isHeading(position) || adapter.isButton(position)) {
-                        columns
-                    } else {
-                        1
-                    }
-            }
-
+            val columnCount = 3
+            spanCount = columnCount
+            spanSizeLookup = SpanSizeLookup(adapter, columnCount)
+        }
+        adapter.onLoadMoreClickListener = { category, page ->
+            discoverViewModel.loadMoreMovies(category, page)
         }
 
         binding.swipeRefreshDiscover.setOnRefreshListener {
@@ -80,25 +76,19 @@ class DiscoverFragment : Fragment() {
     }
 
     private fun subscribeUi(adapter: MovieListAdapter) {
+        // update the adapter with new items
         launchAndRepeatWithViewLifecycle {
-            discoverViewModel.movieList.collect {
-                    when (it) {
-                        is UseCaseResult.Loading -> binding.swipeRefreshDiscover.isRefreshing = true
-                        is UseCaseResult.Success -> {
-                            // TODO add dynamic categories
-                            adapter.updateItems("Discover", it.data, -1)
-                            binding.swipeRefreshDiscover.isRefreshing = false
-                        }
-                        is UseCaseResult.Error -> {
-                            // TODO add dynamic categories
-                            //adapter.addItems("Discover", listOf())
-                            binding.swipeRefreshDiscover.isRefreshing = false
-                        }
-                    }
+            discoverViewModel.moviesMap.collect { moviesMap ->
+                adapter.updateItems(moviesMap)
             }
+        }
 
+        // update the swipeRefreshView
+        launchAndRepeatWithViewLifecycle {
             discoverViewModel.refreshing.collect {
-                binding.swipeRefreshDiscover.isRefreshing = it
+                if (it != binding.swipeRefreshDiscover.isRefreshing) {
+                    binding.swipeRefreshDiscover.isRefreshing = it
+                }
             }
         }
     }

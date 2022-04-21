@@ -8,17 +8,19 @@ import com.ap.moviepocket.domain.UseCaseResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import timber.log.Timber
 import javax.inject.Inject
 
 class DiscoverMoviesUseCase @Inject constructor(
     private val movieRepository: DefaultMovieRepository,
     @IoDispatcher ioDispatcher: CoroutineDispatcher
-) : FlowUseCase<Unit, List<Movie>>(ioDispatcher) {
+) : FlowUseCase<Int, Pair<List<Movie>, Int>>(ioDispatcher) {
 
-    override fun execute(parameters : Unit): Flow<UseCaseResult<List<Movie>>> {
+    /**
+     * Returns a flow that emits the list of requested movies and the next page number as a pair
+     */
+    override fun execute(parameters : Int): Flow<UseCaseResult<Pair<List<Movie>, Int>>> {
         return flow {
-            val movies = movieRepository.getDiscoverMoviesList()
+            val movies = movieRepository.getDiscoverMoviesList(parameters)
             if (movies != null) {
                 emit(UseCaseResult.Success(movies))
             } else {

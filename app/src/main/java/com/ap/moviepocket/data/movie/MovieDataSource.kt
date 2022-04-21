@@ -5,6 +5,6 @@ import com.ap.moviepocket.data.movie.tmdb.TmdbMovie
 
 interface MovieDataSource {
 
-    suspend fun getDiscoverMoviesList() : List<TmdbMovie>?
+    suspend fun getDiscoverMoviesList(page : Int) : Pair<List<TmdbMovie>, Int>?
 
 }
