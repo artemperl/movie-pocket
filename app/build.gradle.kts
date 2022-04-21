@@ -50,44 +50,64 @@ android {
 
 dependencies {
 
+    val corektxVersion = "1.7.0"
+    val appcompatVersion = "1.4.1"
+    val constraintLayoutVersion = "2.1.3"
+    val materialVersion = "1.5.0"
+    val navigationVersion = "2.4.2"
+    val lifecycleVersion = "2.4.1"
+    val archVersion = "2.1.0"
+    val swiperefreshVersion = "1.1.0"
+    val hiltVersion = "2.38.1"
+    val timberVersion = "5.0.1"
+    val retrofitVersion = "2.9.0"
+    val picassoVersion = "2.71828"
+    val gsonVersion = "2.8.9"
+    val junitVersion = "4.13.2"
+    val espressoVersion = "3.4.0"
+    val mockitoVersion = "4.3.1"
+
     // androidx
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.1")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.1")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("androidx.core:core-ktx:$corektxVersion")
+    implementation("androidx.appcompat:appcompat:$appcompatVersion")
+    implementation("com.google.android.material:material:$materialVersion")
+    implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
+    implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshVersion")
 
     // Dagger Hilt
-    implementation("com.google.dagger:hilt-android:2.38.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
     // Timber
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("com.jakewharton.timber:timber:$timberVersion")
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
 
     // Picasso
-    implementation("com.squareup.picasso:picasso:2.71828")
+    implementation("com.squareup.picasso:picasso:$picassoVersion")
 
     // Gson
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:$gsonVersion")
 
     // junit
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    testImplementation("junit:junit:$junitVersion")
+    androidTestImplementation("androidx.test.ext:junit:$junitVersion")
 
     // espresso
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion")
+
+    // Architecture testing
+    testImplementation("androidx.arch.core:core-testing:$archVersion")
 
     // mockito
-    implementation("org.mockito:mockito-core:4.3.1")
+    implementation("org.mockito:mockito-core:$mockitoVersion")
 
     // model
     implementation(project(":model"))
