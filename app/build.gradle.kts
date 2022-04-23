@@ -66,6 +66,8 @@ dependencies {
     val junitVersion = "4.13.2"
     val espressoVersion = "3.4.0"
     val mockitoVersion = "4.3.1"
+    val mockitoKotlinVersion = "4.0.0"
+    val coroutinesTestVersion = "1.6.1"
 
     // androidx
     implementation("androidx.core:core-ktx:$corektxVersion")
@@ -100,6 +102,9 @@ dependencies {
     testImplementation("junit:junit:$junitVersion")
     androidTestImplementation("androidx.test.ext:junit:$junitVersion")
 
+    // coroutines test
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTestVersion")
+
     // espresso
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion")
 
@@ -107,7 +112,9 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:$archVersion")
 
     // mockito
-    implementation("org.mockito:mockito-core:$mockitoVersion")
+    testImplementation("org.mockito:mockito-core:$mockitoVersion")
+    testImplementation("org.mockito:mockito-inline:$mockitoVersion")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
 
     // model
     implementation(project(":model"))
