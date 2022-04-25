@@ -23,7 +23,7 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.ap.moviepocket.CustomTestRunner"
     }
 
     buildTypes {
@@ -68,6 +68,8 @@ dependencies {
     val mockitoVersion = "4.3.1"
     val mockitoKotlinVersion = "4.0.0"
     val coroutinesTestVersion = "1.6.1"
+    val androidxTestVersion = "1.4.0"
+    val androidxJunitVersion = "1.1.2"
 
     // androidx
     implementation("androidx.core:core-ktx:$corektxVersion")
@@ -100,7 +102,11 @@ dependencies {
 
     // junit
     testImplementation("junit:junit:$junitVersion")
-    androidTestImplementation("androidx.test.ext:junit:$junitVersion")
+    androidTestImplementation("androidx.test.ext:junit:$androidxJunitVersion")
+    androidTestImplementation("androidx.test.ext:junit-ktx:$androidxJunitVersion")
+
+    // androidx test
+    androidTestImplementation("androidx.test:core-ktx:$androidxTestVersion")
 
     // coroutines test
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTestVersion")
@@ -115,6 +121,10 @@ dependencies {
     testImplementation("org.mockito:mockito-core:$mockitoVersion")
     testImplementation("org.mockito:mockito-inline:$mockitoVersion")
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
+
+    // Hilt testing
+    androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
     // model
     implementation(project(":model"))
